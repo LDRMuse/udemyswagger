@@ -2,6 +2,11 @@
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+
+const YAML = require('yamljs')
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = YAML.load('./api/swagger/swagger.yaml')
+
 module.exports = app; // for testing
 
 var config = {
@@ -10,6 +15,9 @@ var config = {
 
 SwaggerExpress.create(config, function(err, swaggerExpress) {
   if (err) { throw err; }
+
+  // route swaggerUi uses to setup and use the swaggerDocument
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
   // install middleware
   swaggerExpress.register(app);
